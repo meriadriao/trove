@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TROVE | A Pomodoro Tracker app</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>@import url("style.css");</style>
+    
+  </head>
+  <body>
+    <section class="menu">
+      <button type="button" aria-label="Settings">
+        <img src="img/settings-button.svg" alt="Settings" />
+      </button>
+      <input
+        type="text"
+        id="plans-today"
+        class="plans-input"
+        placeholder="Plans for today?"
+        aria-label="Plans for today"
+      />
+      <!-- add night mode toggle later -->
+    </section>
+
+    <section class="pomodoro-container">
+      <div class="timer-display">
+        <span id="minutes">25</span>
+        <span class="separator">:</span>
+        <span id="seconds">00</span>
+      </div>
+
+      <div class="mode-toggles">
+        <button class="mode-btn active" id="focus-mode">FOCUS</button>
+        <button class="mode-btn" id="break-mode">BREAK</button>
+      </div>
+    </section>
+  </body>
+</html>

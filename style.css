@@ -1,0 +1,105 @@
+     :root {
+        --bg-color: #fdfaf1;
+        --text-main: #ff8c8c;
+        --text-muted: #a5a5a5;
+        --focus-green: #8da399;
+        --break-blue: #90a8cf;
+        --pixel-font: "Pixelify Sans", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        font-family: var(--pixel-font);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        padding-top: 80px;
+      }
+
+      .top-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 320px;
+        margin-bottom: 40px;
+      }
+
+      .pixel-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .input-wrapper {
+        flex-grow: 1;
+        border-bottom: 2px solid var(--break-blue);
+      }
+
+      #todo-input {
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: center;
+        font-family: var(--pixel-font);
+        font-size: 1.4rem;
+        color: var(--text-muted);
+        outline: none;
+        padding-bottom: 2px;
+      }
+
+      .pomodoro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The Big Timer Numbers */
+.timer-display {
+  font-size: 10rem; /* Very large */
+  line-height: 0.8;
+  color: var(--text-main);
+  letter-spacing: -5px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* The Toggle Buttons */
+.mode-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 10px;
+}
+
+.mode-btn {
+  background: none;
+  border: none;
+  font-family: var(--pixel-font);
+  font-size: 1.2rem;
+  padding: 4px 15px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  color: #333;
+}
+
+/* The Green "Focus" state */
+.mode-btn.active {
+  background-color: var(--focus-green);
+  color: white;
+  border-radius: 2px; /* Slight rounding for pixel look */
+}
+
+/* The blue line under "Break" */
+#break-mode {
+  border-bottom: 2px solid var(--break-blue);
+  margin-left: 10px;
+}
