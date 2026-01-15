@@ -1,0 +1,133 @@
+const timerState = {
+  isRunning: false,
+  currentMode: 'focus', 
+  timeLeft: 25 * 60,
+  focusTime: 25 * 60, 
+  breakTime: 5 * 60,
+  intervalId: null,
+};
+
+const minutesDisplay = document.getElementById('minutes');
+const secondsDisplay = document.getElementById('seconds');
+const focusBtn = document.getElementById('focus-mode');
+const breakBtn = document.getElementById('break-mode');
+const resetBtn = document.getElementById('reset-mode');
+
+updateDisplay();
+
+focusBtn.addEventListener('click', switchToFocus);
+breakBtn.addEventListener('click', switchToBreak);
+resetBtn.addEventListener('click', resetTimer);
+
+document.querySelector('.timer-display').addEventListener('click', toggleTimer);
+
+function updateDisplay() {
+  const minutes = Math.floor(timerState.timeLeft / 60);
+  const seconds = timerState.timeLeft % 60;
+  
+  minutesDisplay.textContent = String(minutes).padStart(2, '0');
+  secondsDisplay.textContent = String(seconds).padStart(2, '0');
+}
+
+function toggleTimer() {
+  if (timerState.isRunning) {
+    pauseTimer();
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  if (timerState.isRunning || timerState.timeLeft <= 0) return;
+  
+  timerState.isRunning = true;
+  updateButtonText();
+  
+  timerState.intervalId = setInterval(() => {
+    timerState.timeLeft--;
+    updateDisplay();
+    
+    if (timerState.timeLeft <= 0) {
+      timerComplete();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerState.isRunning) return;
+  
+  timerState.isRunning = false;
+  clearInterval(timerState.intervalId);
+  updateButtonText();
+}
+
+function resetTimer() {
+  pauseTimer();
+  timerState.currentMode = 'focus';
+  timerState.timeLeft = timerState.focusTime;
+  updateModeButtons();
+  updateDisplay();
+}
+
+function switchToFocus() {
+  if (timerState.currentMode === 'focus') {
+    if (timerState.isRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  } else {
+    pauseTimer();
+    timerState.currentMode = 'focus';
+    timerState.timeLeft = timerState.focusTime;
+    updateModeButtons();
+    updateDisplay();
+    startTimer();
+  }
+}
+
+function switchToBreak() {
+  if (timerState.currentMode === 'break') {
+    if (timerState.isRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  } else {
+    pauseTimer();
+    timerState.currentMode = 'break';
+    timerState.timeLeft = timerState.breakTime;
+    updateModeButtons();
+    updateDisplay();
+    startTimer();
+  }
+}
+
+function updateModeButtons() {
+  focusBtn.classList.toggle('active', timerState.currentMode === 'focus');
+  breakBtn.classList.toggle('active', timerState.currentMode === 'break');
+  updateButtonText();
+}
+
+function updateButtonText() {
+  if (timerState.currentMode === 'focus') {
+    focusBtn.textContent = timerState.isRunning ? 'PAUSE' : 'FOCUS';
+  } else if (timerState.currentMode === 'break') {
+    breakBtn.textContent = timerState.isRunning ? 'PAUSE' : 'BREAK';
+  }
+}
+
+function timerComplete() {
+  pauseTimer();
+  playNotification();
+  
+  if (timerState.currentMode === 'focus') {
+    switchToBreak();
+  } else {
+    switchToFocus();
+  }
+}
+
+function playNotification() {
+  console.log('Time\'s up!');
+}

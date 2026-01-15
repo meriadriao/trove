@@ -13,17 +13,17 @@
     />
 
     <style>@import url("style.css");</style>
+    <script defer src="script.js"></script>
     
   </head>
   <body>
     <section class="menu">
-      <button type="button" aria-label="Settings">
+      <button id="settings-button" type="button" aria-label="Settings">
         <img src="img/settings-button.svg" alt="Settings" />
       </button>
       <input
         type="text"
         id="plans-today"
-        class="plans-input"
         placeholder="Plans for today?"
         aria-label="Plans for today"
       />
@@ -40,7 +40,9 @@
       <div class="mode-toggles">
         <button class="mode-btn active" id="focus-mode">FOCUS</button>
         <button class="mode-btn" id="break-mode">BREAK</button>
+        <button class="mode-btn" id="reset-mode">RESET</button>
       </div>
+
     </section>
   </body>
 </html>
