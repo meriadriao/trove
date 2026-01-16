@@ -33,8 +33,6 @@ focusBtn.addEventListener('click', switchToFocus);
 breakBtn.addEventListener('click', switchToBreak);
 resetBtn.addEventListener('click', resetTimer);
 
-document.querySelector('.timer-display').addEventListener('click', toggleTimer);
-
 // To-do list functionality
 editListBtn.addEventListener('click', toggleTodoList);
 todoInput.addEventListener('keypress', (e) => {
