@@ -203,7 +203,7 @@ body {
 }
 
 .timer-display {
-  font-size: 10rem;
+  font-size: 8rem;
   line-height: 0.8;
   color: var(--text-main);
   letter-spacing: -5px;
