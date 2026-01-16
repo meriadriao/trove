@@ -43,16 +43,148 @@ body {
 }
 
 #plans-today {
-  width: 100%;
+  width: 200px;
   background: none;
   border: none;
   border-bottom: 2px solid var(--focus-green);
   text-align: center;
   font-family: var(--pixel-font);
   font-size: 1.1rem;
-  color: var(--text-muted);
-  outline: none;
+  font-weight: normal;
+  color: #3f3f3f;
   padding-bottom: 2px;
+  transition: color 0.2s ease;
+  cursor: default;
+  margin: 0;
+  padding-top: 0;
+}
+
+#plans-today.has-task {
+  color: var(--text-main);
+}
+
+.plans-container {
+  width: 100%;
+  position: relative;
+}
+
+.plans-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+#edit-list-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#edit-list-btn img {
+  width: 30px;
+  height: 30px;
+}
+
+.todo-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 2px solid var(--focus-green);
+  border-radius: 4px;
+  background-color: rgba(141, 161, 152, 0.05);
+}
+
+.todo-list.hidden {
+  display: none;
+}
+
+.todo-input {
+  font-family: var(--pixel-font);
+  font-size: 1rem;
+  padding: 8px;
+  border: 1px solid var(--focus-green);
+  border-radius: 2px;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.todo-input:focus {
+  border-color: var(--break-blue);
+}
+
+.todo-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background-color: var(--bg-color);
+  border-radius: 2px;
+  border-left: 3px solid var(--break-blue);
+}
+
+.todo-item.completed {
+  opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.todo-checkbox {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--focus-green);
+}
+
+.todo-text {
+  flex: 1;
+  font-family: var(--pixel-font);
+  font-size: 1rem;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.todo-delete {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-family: var(--pixel-font);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.todo-delete:hover {
+  color: #ff8c8c;
 }
 
 .pomodoro-container {
@@ -85,13 +217,36 @@ body {
   font-family: var(--pixel-font);
   font-size: 1.2rem;
   padding: 4px 15px;
-  cursor: pointer;
   letter-spacing: 1px;
-  color: #333;
+  color: #3f3f3f;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.mode-btn::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: var(--break-blue);
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}
+
+.mode-btn:hover::before {
+  transform: scaleY(1);
+}
+
+.mode-btn:hover {
+  color: var(--bg-color);
 }
 
 .mode-btn.active {
   background-color: var(--focus-green);
   color: white;
-  border-radius: 2px; /* Slight rounding for pixel look */
 }
