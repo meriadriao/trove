@@ -5,6 +5,7 @@ const timerState = {
   focusTime: 25 * 60, 
   breakTime: 5 * 60,
   intervalId: null,
+  sessionsCompleted: 0,
 };
 
 const todoState = {
@@ -23,6 +24,8 @@ const todoList = document.getElementById('todo-list');
 const todoInput = document.getElementById('todo-input');
 const todoItems = document.getElementById('todo-items');
 const editListBtn = document.getElementById('edit-list-btn');
+
+const plantsRow = document.querySelector('.plants-row');
 
 updateDisplay();
 
@@ -85,8 +88,10 @@ function resetTimer() {
   pauseTimer();
   timerState.currentMode = 'focus';
   timerState.timeLeft = timerState.focusTime;
+  timerState.sessionsCompleted = 0;
   updateModeButtons();
   updateDisplay();
+  clearAllPlants();
 }
 
 function switchToFocus() {
@@ -95,6 +100,7 @@ function switchToFocus() {
       pauseTimer();
     } else {
       startTimer();
+      showCurrentPlantEmpty();
     }
   } else {
     pauseTimer();
@@ -103,6 +109,7 @@ function switchToFocus() {
     updateModeButtons();
     updateDisplay();
     startTimer();
+    showCurrentPlantEmpty();
   }
 }
 
@@ -142,6 +149,8 @@ function timerComplete() {
   playNotification();
   
   if (timerState.currentMode === 'focus') {
+    growCurrentPlant();
+    timerState.sessionsCompleted++;
     switchToBreak();
   } else {
     switchToFocus();
@@ -227,4 +236,40 @@ function renderTodoItems() {
     
     todoItems.appendChild(li);
   });
+}
+
+// Plant functions
+function clearAllPlants() {
+  const slots = document.querySelectorAll('.plant-slot');
+  slots.forEach(slot => {
+    const emptyPot = slot.querySelector('.pot-empty');
+    const grownPlant = slot.querySelector('.pot-grown');
+    if (emptyPot) emptyPot.classList.add('hidden');
+    if (grownPlant) grownPlant.classList.add('hidden');
+  });
+}
+
+function showCurrentPlantEmpty() {
+  const slotId = `slot-${timerState.sessionsCompleted + 1}`;
+  const slot = document.getElementById(slotId);
+  
+  if (slot) {
+    const emptyPot = slot.querySelector('.pot-empty');
+    if (emptyPot) {
+      emptyPot.classList.remove('hidden');
+    }
+  }
+}
+
+function growCurrentPlant() {
+  const slotId = `slot-${timerState.sessionsCompleted + 1}`;
+  const slot = document.getElementById(slotId);
+  
+  if (slot) {
+    const emptyPot = slot.querySelector('.pot-empty');
+    const grownPlant = slot.querySelector('.pot-grown');
+    
+    if (emptyPot) emptyPot.classList.add('hidden');
+    if (grownPlant) grownPlant.classList.remove('hidden');
+  }
 }

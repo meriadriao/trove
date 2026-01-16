@@ -25,7 +25,9 @@
       <!-- add night mode toggle later -->
       <div class="plans-container">
         <div class="plans-input-wrapper">
-          <h1 id="plans-today" aria-label="Plans for today">Plans for today?</h1>
+          <h1 id="plans-today" aria-label="Plans for today">
+            Plans for today?
+          </h1>
           <button id="edit-list-btn" type="button" aria-label="Edit task list">
             <img src="img/edit-button.svg" alt="Edit" />
           </button>
@@ -44,10 +46,12 @@
     </section>
 
     <section class="pomodoro-container">
-      <div class="timer-display">
-        <span id="minutes">25</span>
-        <span class="separator">:</span>
-        <span id="seconds">00</span>
+      <div class="timer-wrapper">
+        <div class="timer-display">
+          <span id="minutes">25</span>
+          <span class="separator">:</span>
+          <span id="seconds">00</span>
+        </div>
       </div>
 
       <div class="mode-toggles">
@@ -55,6 +59,39 @@
         <button class="mode-btn" id="break-mode">BREAK</button>
         <button class="mode-btn" id="reset-mode">RESET</button>
       </div>
+    </section>
+
+    <section class="decoration-section">
+      <div class="plants-row">
+        <div class="plant-slot" id="slot-1">
+          <img src="img/p1 vase.svg" alt="Empty Vase 1" class="pot-empty hidden" />
+          <img src="img/p1.svg" alt="Grown Plant 1" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-2">
+          <img src="img/p2 vase.svg" alt="Empty Vase 2" class="pot-empty hidden" />
+          <img src="img/p2.svg" alt="Grown Plant 2" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-3">
+          <img src="img/p3 vase.svg" alt="Empty Vase 3" class="pot-empty hidden" />
+          <img src="img/p3.svg" alt="Grown Plant 3" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-4">
+          <img src="img/p4 vase.svg" alt="Empty Vase 4" class="pot-empty hidden" />
+          <img src="img/p4.svg" alt="Grown Plant 4" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-5">
+          <img src="img/p5 vase.svg" alt="Empty Vase 5" class="pot-empty hidden" />
+          <img src="img/p5.svg" alt="Grown Plant 5" class="pot-grown hidden" />
+        </div>
+      </div>
+
+      <div class="shelf-line"></div>
+
+      <footer class="credits">Trove, a Pomodoro tracker by Meri</footer>
     </section>
   </body>
 </html>
