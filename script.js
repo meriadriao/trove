@@ -13,6 +13,11 @@ const todoState = {
   isListOpen: false,
 };
 
+const settingsState = {
+  nightMode: false,
+  font: 'pixel',
+};
+
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
 const focusBtn = document.getElementById('focus-mode');
@@ -25,6 +30,17 @@ const todoInput = document.getElementById('todo-input');
 const todoItems = document.getElementById('todo-items');
 const editListBtn = document.getElementById('edit-list-btn');
 
+const settingsButton = document.getElementById('settings-button');
+const closeSettingsBtn = document.getElementById('close-settings-btn');
+const settingsContent = document.getElementById('settings-content');
+const nightModeToggle = document.getElementById('night-mode-toggle');
+const fontBtns = document.querySelectorAll('.font-btn');
+const focusTimeInput = document.getElementById('focus-time-input');
+const breakTimeInput = document.getElementById('break-time-input');
+const settingsContainer = document.querySelector('.settings-container');
+const plansContainer = document.querySelector('.plans-container');
+const closePlansBtn = document.getElementById('close-plans-btn');
+
 const plantsRow = document.querySelector('.plants-row');
 
 updateDisplay();
@@ -33,8 +49,18 @@ focusBtn.addEventListener('click', switchToFocus);
 breakBtn.addEventListener('click', switchToBreak);
 resetBtn.addEventListener('click', resetTimer);
 
-// To-do list functionality
-editListBtn.addEventListener('click', toggleTodoList);
+// Settings functionality
+settingsButton.addEventListener('click', toggleSettings);
+closeSettingsBtn.addEventListener('click', toggleSettings);
+nightModeToggle.addEventListener('change', toggleNightMode);
+fontBtns.forEach(btn => btn.addEventListener('click', changeFontFamily));
+focusTimeInput.addEventListener('change', updateFocusTime);
+breakTimeInput.addEventListener('change', updateBreakTime);
+
+// Plans functionality
+editListBtn.addEventListener('click', togglePlans);
+closePlansBtn.addEventListener('click', togglePlans);
+plansToday.addEventListener('click', togglePlans);
 todoInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter' && todoInput.value.trim()) {
     addTodoItem(todoInput.value.trim());
@@ -160,6 +186,13 @@ function playNotification() {
 }
 
 // To-do list functions
+function togglePlans() {
+  plansContainer.classList.toggle('open');
+  if (plansContainer.classList.contains('open')) {
+    todoInput.focus();
+  }
+}
+
 function toggleTodoList() {
   todoState.isListOpen = !todoState.isListOpen;
   todoList.classList.toggle('hidden');
@@ -269,5 +302,60 @@ function growCurrentPlant() {
     
     if (emptyPot) emptyPot.classList.add('hidden');
     if (grownPlant) grownPlant.classList.remove('hidden');
+  }
+}
+
+// Settings functions
+function toggleSettings() {
+  settingsContainer.classList.toggle('open');
+}
+
+function toggleNightMode(e) {
+  settingsState.nightMode = e.target.checked;
+  // Placeholder - colors will be chosen later
+  console.log('Night Mode:', settingsState.nightMode);
+}
+
+function changeFontFamily(e) {
+  const fontType = e.target.dataset.font;
+  
+  // Remove active class from all buttons
+  fontBtns.forEach(btn => btn.classList.remove('active'));
+  
+  // Add active class to clicked button
+  e.target.classList.add('active');
+  
+  // Map font types to CSS variables
+  const fontMap = {
+    'pixel': '--pixel-font',
+    'sans': '--sans-serif-font',
+  };
+  
+  const fontVar = fontMap[fontType];
+  if (fontVar) {
+    document.body.style.fontFamily = `var(${fontVar})`;
+    settingsState.font = fontType;
+  }
+}
+
+function updateFocusTime(e) {
+  const newFocusTime = parseInt(e.target.value) || 25;
+  timerState.focusTime = newFocusTime * 60;
+  
+  // Update display if in focus mode and timer is not running
+  if (timerState.currentMode === 'focus' && !timerState.isRunning) {
+    timerState.timeLeft = timerState.focusTime;
+    updateDisplay();
+  }
+}
+
+function updateBreakTime(e) {
+  const newBreakTime = parseInt(e.target.value) || 5;
+  timerState.breakTime = newBreakTime * 60;
+  
+  // Update display if in break mode and timer is not running
+  if (timerState.currentMode === 'break' && !timerState.isRunning) {
+    timerState.timeLeft = timerState.breakTime;
+    updateDisplay();
   }
 }
