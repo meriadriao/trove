@@ -1,0 +1,92 @@
+:root {
+  --bg-color: #fdfaf1;
+  --bg-color-accent: #fff3f3;
+  --font-color: #515151;
+  --text-main: #ff8c8c;
+  --text-muted: #a5a5a5;
+  --focus-green: #8da399;
+  --break-blue: #90a8cf;
+  --pixel-font: "Pixelify Sans", monospace;
+  --sans-serif-font: Verdana, sans-serif;
+}
+
+body.night-mode {
+  --bg-color: #1e1e1e;
+  --bg-color-accent: #2c2c2c;
+  --font-color: #f3f3f3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: var(--pixel-font);
+  color: var(--font-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding-top: 150px;
+}
+
+.timer-display {
+  font-size: 8rem;
+  line-height: 0.8;
+  color: var(--text-main);
+  letter-spacing: -5px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.mode-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 10px;
+}
+
+.mode-button {
+  background: none;
+  border: none;
+  border-bottom: 2px solid var(--break-blue);
+  font-family: var(--text-main);
+  font-size: 1.2rem;
+  padding: 4px 15px;
+  letter-spacing: 1px;
+  color: var(--font-color);
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+
+.mode-button::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: var(--break-blue);
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}
+
+.mode-button:hover::before {
+  transform: scaleY(1);
+}
+
+.mode-button:hover {
+  color: var(--bg-color);
+}
+
+.mode-button.active {
+  background-color: var(--focus-green);
+  color: var(--bg-color);
+}

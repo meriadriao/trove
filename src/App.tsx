@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./index.css";
 
 function App() {
@@ -7,32 +7,54 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(focusDuration * 60);
   const [mode, setMode] = useState("focus");
   const [isActive, setIsActive] = useState(false);
+  const modeRef = useRef("focus");
+  const breakDurationRef = useRef(5);
+  const focusDurationRef = useRef(25);
+
+  // Update refs when state changes
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  useEffect(() => {
+    breakDurationRef.current = breakDuration;
+  }, [breakDuration]);
+
+  useEffect(() => {
+    focusDurationRef.current = focusDuration;
+  }, [focusDuration]);
 
   // Countdown effect
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
 
-    if (isActive && timeLeft > 0) {
+    if (isActive) {
       interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          const newTime = prev - 1;
+          
+          if (newTime === 0) {
+            // Switch mode and reset timer
+            const currentMode = modeRef.current;
+            const newMode = currentMode === "focus" ? "break" : "focus";
+            const duration = newMode === "focus" ? focusDurationRef.current : breakDurationRef.current;
+            
+            // Update mode through a separate call
+            setMode(newMode);
+            return duration * 60;
+          }
+          
+          return newTime;
+        });
       }, 1000);
-    } else if (timeLeft === 0 && isActive) {
-      if (mode === "focus") {
-        setMode("break");
-        setTimeLeft(breakDuration * 60);
-      } else {
-        setMode("focus");
-        setTimeLeft(focusDuration * 60);
-      }
     }
 
     return () => clearInterval(interval);
-  }, [isActive, timeLeft, mode, focusDuration, breakDuration]);
+  }, [isActive]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  const handleStartPause = () => setIsActive(!isActive);
   const handleReset = () => {
     setIsActive(false);
     setTimeLeft(mode === "focus" ? focusDuration * 60 : breakDuration * 60);
@@ -55,7 +77,7 @@ function App() {
         <div className="toolbar">
           <div className="settings">
             <button id="settings-button" type="button" aria-label="Settings">
-              <img src="src\assets\button-settings.png" alt="Settings" />
+              <img src="src/assets/button-settings.png" alt="Settings" />
             </button>
             <div className="settings-menu">
               <div className="setting-header">
@@ -71,7 +93,7 @@ function App() {
               <div className="setting-content">
                 <div className="setting-item">
                   {/* notificações */}
-
+                </div>
                 <div className="setting-item">
                   <label htmlFor="setting-label">Night Mode </label>
                   <select id="night-mode-select">
@@ -82,8 +104,9 @@ function App() {
                 <div className="setting-item">
                   <label htmlFor="setting-label">Font </label>
                   <select id="font-select">
-                    <option value="funnel-display">Funnel Display</option>
                     <option value="pixelify-sans">Pixelify Sans</option>
+                    <option value="funnel-display">Funnel Display</option>
+                    
                   </select>
                 </div>
                 <hr />
@@ -132,10 +155,10 @@ function App() {
             type="button"
             aria-label="Edit task list"
           >
-            <img src="src\assets\button-edit.png" alt="Edit task list" />
+            <img src="src/assets/button-edit.png" alt="Edit task list" />
           </button>
         </div>
-        <div className="timer"></div>
+        <div className="timer">
         <div className="timer-wrapper">
           <div className="timer-display">
             <span id="minutes">{String(minutes).padStart(2, "0")}</span>
@@ -171,6 +194,7 @@ function App() {
           >
             RESET
           </button>
+        </div>
         </div>
         <div className="shelf"></div>
       </div>
