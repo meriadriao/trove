@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import "./index.css";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+/* import all the icons in Free Solid, Free Regular, and Brands styles */
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+
+library.add(fas, far, fab);
+
 function App() {
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
@@ -10,6 +20,8 @@ function App() {
   const modeRef = useRef("focus");
   const breakDurationRef = useRef(5);
   const focusDurationRef = useRef(25);
+  const [leafBalance, setLeafBalance] = useState<number>(0);
+  const [ownedItems, setOwnedItems] = useState<PlantItem[]>([]);
 
   // Update refs when state changes
   useEffect(() => {
@@ -74,9 +86,15 @@ function App() {
       interval = setInterval(() => {
         setTimeLeft((prev) => {
           const newTime = prev - 1;
+          if (
+            modeRef.current === "focus" &&
+            newTime >= 0 &&
+            newTime % 60 === 0
+          ) {
+            setLeafBalance((prevLeafs) => prevLeafs + 1);
+          }
 
           if (newTime === 0) {
-            // Switch mode and reset timer
             const currentMode = modeRef.current;
             const newMode = currentMode === "focus" ? "break" : "focus";
             const duration =
@@ -84,7 +102,6 @@ function App() {
                 ? focusDurationRef.current
                 : breakDurationRef.current;
 
-            // Update mode through a separate call
             setMode(newMode);
             return duration * 60;
           }
@@ -116,9 +133,6 @@ function App() {
       );
     }
   };
-
-  const [leafBalance, setLeafBalance] = useState<number>(0);
-  const [ownedItems, setOwnedItems] = useState<PlantItem[]>([]);
 
   const shelfWidth = 350;
   const shelves = useMemo(() => {
@@ -154,7 +168,10 @@ function App() {
               aria-label="Settings"
               onClick={handleSettingsToggle}
             >
-              <img src="src/assets/button-settings.png" alt="Settings" />
+              <FontAwesomeIcon
+                icon="fa-solid fa-gear"
+                style={{ color: "rgb(255, 255, 255)" }}
+              />
             </button>
             <div className="settings-menu" id="settings-menu">
               <div className="setting-header" id="setting-header">
@@ -232,7 +249,10 @@ function App() {
             aria-label="Edit task list"
             onClick={handlePlansToggle}
           >
-            <img src="src/assets/button-edit.png" alt="Edit task list" />
+            <FontAwesomeIcon
+              icon="fa-solid fa-pen-to-square"
+              style={{ color: "rgb(255, 255, 255)" }}
+            />
           </button>
         </div>
 
@@ -329,37 +349,43 @@ function App() {
             <div className="items-row">
               {shelves[currentShelfPage]?.map((item, idx) => (
                 <img
-                  key={'${item.id}-${idx}'}
+                  key={"${item.id}-${idx}"}
                   src={item.src}
                   alt={item.name}
-                  style={{ width: `${item.width}px`, height: `${item.height}px` }}
+                  style={{
+                    width: `${item.width}px`,
+                    height: `${item.height}px`,
+                  }}
                 />
               ))}
             </div>
           </div>
           <div className="shelf-line"></div>
-          <div className="shelf-nav">
-            <button
-              className="shelf-nav-button"
-              onClick={() =>
-                setCurrentShelfPage((prev) => 
-                  Math.max(prev - 1, 0))
-              }
-              disabled={currentShelfPage === 0}
-            >
-              {"<"}
-            </button>
-            <button
-              className="shelf-nav-button"
-              onClick={() =>
-                setCurrentShelfPage((prev) =>
-                  Math.min(prev + 1, shelves.length - 1),
-                )
-              }
-              disabled={currentShelfPage >= shelves.length - 1}
-            >
-              {">"}
-            </button>
+          <div className="shelf-menu">
+            <div className="shelf-nav">
+              <button
+                className="shelf-nav-button"
+                onClick={() =>
+                  setCurrentShelfPage((prev) => Math.max(prev - 1, 0))
+                }
+                disabled={currentShelfPage === 0}
+              >
+                {"<"}
+              </button>
+              <button
+                className="shelf-nav-button"
+                onClick={() =>
+                  setCurrentShelfPage((prev) =>
+                    Math.min(prev + 1, shelves.length - 1),
+                  )
+                }
+                disabled={currentShelfPage >= shelves.length - 1}
+              >
+                {">"}
+              </button>
+            </div>
+            <div className="leaf-balance">
+              <FontAwesomeIcon icon="fa-solid fa-leaf" className="leaf-icon" /> {leafBalance} leafs</div>
           </div>
         </div>
       </div>
