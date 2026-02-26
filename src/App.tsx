@@ -38,14 +38,14 @@ function App() {
   };
   const [isPlansOpen, setIsPlansOpen] = useState(false);
 
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>([]);
 
   const handleTodoInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const input = e.currentTarget;
       const newTask = input.value.trim();
       if (newTask) {
-        setTasks((prev) => [...prev, newTask]);
+        setTasks((prev) => [...prev, { text: newTask, completed: false }]);
         input.value = "";
       }
     }
@@ -53,6 +53,12 @@ function App() {
 
   const deleteTask = (index: number) => {
     setTasks((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const toggleTaskCompleted = (index: number) => {
+    setTasks((prev) =>
+      prev.map((t, i) => (i === index ? { ...t, completed: !t.completed } : t)),
+    );
   };
 
   useEffect(() => {
@@ -266,12 +272,23 @@ function App() {
         />
         <ul id="todo-items" className="todo-items">
           {tasks.map((task, index) => (
-            <li key={index} className="todo-item">
-              {task}
+            <li
+              key={index}
+              className={`todo-item ${task.completed ? "completed" : ""}`}
+            >
+              <label className="todo-label">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => toggleTaskCompleted(index)}
+                  aria-label={`Mark ${task.text} as completed`}
+                />
+                <span className="todo-text">{task.text}</span>
+              </label>
               <button
                 className="todo-delete"
                 onClick={() => deleteTask(index)}
-                aria-label={`Delete task ${task}`}
+                aria-label={`Delete task ${task.text}`}
               >
                 X
               </button>
@@ -281,7 +298,8 @@ function App() {
       </div>
         </div>
 
-        <div className="shelf"></div>
+        <div className="shelf">
+        </div>
       </div>
     </>
   );
