@@ -24,7 +24,9 @@ body {
   background-color: var(--bg-color);
   font-family: var(--pixel-font);
   color: var(--font-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
   display: grid;
   grid-template-columns: 350px;
   grid-template-areas: "clock" "shelf";
@@ -43,7 +45,7 @@ body {
 
 /* settings */
 .settings-button {
-  background: #F66063;
+  background: #f66063;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -52,14 +54,14 @@ body {
   border-radius: 50%;
 }
 
-.settings-button img {  
+.settings-button img {
   width: 70%;
   height: 70%;
   align-items: center;
 }
 
 .settings-button:hover {
-  background: #F66063;
+  background: #f66063;
   opacity: 0.8;
 }
 
@@ -166,7 +168,7 @@ body {
 }
 
 .edit-list-button {
-  background: #F66063;
+  background: #f66063;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -175,14 +177,14 @@ body {
   border-radius: 50%;
 }
 
-.edit-list-button img {  
+.edit-list-button img {
   width: 70%;
   height: 70%;
   align-items: center;
 }
 
 .edit-list-button:hover {
-  background: #F66063;
+  background: #f66063;
   opacity: 0.8;
 }
 
@@ -309,7 +311,7 @@ body {
 .todo-delete:hover {
   color: #ff8c8c;
 }
-  
+
 /* timer */
 .timer {
   display: flex;
@@ -376,4 +378,47 @@ body {
 .mode-button.active {
   background-color: var(--focus-green);
   color: var(--bg-color);
+}
+
+/* shelf items */
+
+.cacarecos {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.items-row {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: center;
+  height: 120px;
+}
+
+.cacarecos img {
+  width: auto;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.shelf-line {
+  width: 100%;
+  height: 2px;
+  background-color: #532e1a;
+}
+
+.shelf-nav-button {
+  margin-top: 10px;
+  margin-left: 10px;
+  background: #f66063;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }

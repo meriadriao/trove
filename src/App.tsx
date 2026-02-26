@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import "./index.css";
 
 function App() {
@@ -38,7 +38,9 @@ function App() {
   };
   const [isPlansOpen, setIsPlansOpen] = useState(false);
 
-  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>([]);
+  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>(
+    [],
+  );
 
   const handleTodoInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -65,7 +67,6 @@ function App() {
     focusDurationRef.current = focusDuration;
   }, [focusDuration]);
 
-  // Countdown effect
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
@@ -108,7 +109,6 @@ function App() {
       // If already in this mode, toggle start/pause
       setIsActive(!isActive);
     } else {
-      // If switching modes, switch and reset timer
       setIsActive(false);
       setMode(newMode);
       setTimeLeft(
@@ -117,13 +117,38 @@ function App() {
     }
   };
 
+  const [leafBalance, setLeafBalance] = useState<number>(0);
+  const [ownedItems, setOwnedItems] = useState<PlantItem[]>([]);
+
+  const shelfWidth = 350;
+  const shelves = useMemo(() => {
+    const result: PlantItem[][] = [[]];
+    let currentWidth = 0;
+    let shelfIndex = 0;
+
+    ownedItems.forEach((item) => {
+      if (currentWidth + item.width > shelfWidth) {
+        result.push([item]);
+        shelfIndex++;
+        currentWidth = item.width;
+      } else {
+        result[shelfIndex].push(item);
+        currentWidth += item.width;
+      }
+    });
+
+    return result;
+  }, [ownedItems]);
+
+  const [currentShelfPage, setCurrentShelfPage] = useState(0);
+
   return (
     <>
       <div className="pomodoro">
         <div className="toolbar">
           <div className="settings">
             <button
-              className="settings-button"  
+              className="settings-button"
               id="settings-button"
               type="button"
               aria-label="Settings"
@@ -210,6 +235,7 @@ function App() {
             <img src="src/assets/button-edit.png" alt="Edit task list" />
           </button>
         </div>
+
         <div className="timer">
           <div className="timer-wrapper">
             <div className="timer-display">
@@ -262,43 +288,79 @@ function App() {
             </button>
           </div>
           <div id="todo-list" className="todo-list">
-        <input
-          type="text"
-          id="todo-input"
-          className="todo-input"
-          placeholder="Add a new task..."
-          aria-label="Add a new task"
-          onKeyDown={handleTodoInput}
-        />
-        <ul id="todo-items" className="todo-items">
-          {tasks.map((task, index) => (
-            <li
-              key={index}
-              className={`todo-item ${task.completed ? "completed" : ""}`}
-            >
-              <label className="todo-label">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTaskCompleted(index)}
-                  aria-label={`Mark ${task.text} as completed`}
-                />
-                <span className="todo-text">{task.text}</span>
-              </label>
-              <button
-                className="todo-delete"
-                onClick={() => deleteTask(index)}
-                aria-label={`Delete task ${task.text}`}
-              >
-                X
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+            <input
+              type="text"
+              id="todo-input"
+              className="todo-input"
+              placeholder="Add a new task..."
+              aria-label="Add a new task"
+              onKeyDown={handleTodoInput}
+            />
+            <ul id="todo-items" className="todo-items">
+              {tasks.map((task, index) => (
+                <li
+                  key={index}
+                  className={`todo-item ${task.completed ? "completed" : ""}`}
+                >
+                  <label className="todo-label">
+                    <input
+                      type="checkbox"
+                      checked={task.completed}
+                      onChange={() => toggleTaskCompleted(index)}
+                      aria-label={`Mark ${task.text} as completed`}
+                    />
+                    <span className="todo-text">{task.text}</span>
+                  </label>
+                  <button
+                    className="todo-delete"
+                    onClick={() => deleteTask(index)}
+                    aria-label={`Delete task ${task.text}`}
+                  >
+                    X
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="shelf">
+          <div className="cacarecos">
+            <div className="items-row">
+              {shelves[currentShelfPage]?.map((item, idx) => (
+                <img
+                  key={'${item.id}-${idx}'}
+                  src={item.src}
+                  alt={item.name}
+                  style={{ width: `${item.width}px`, height: `${item.height}px` }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="shelf-line"></div>
+          <div className="shelf-nav">
+            <button
+              className="shelf-nav-button"
+              onClick={() =>
+                setCurrentShelfPage((prev) => 
+                  Math.max(prev - 1, 0))
+              }
+              disabled={currentShelfPage === 0}
+            >
+              {"<"}
+            </button>
+            <button
+              className="shelf-nav-button"
+              onClick={() =>
+                setCurrentShelfPage((prev) =>
+                  Math.min(prev + 1, shelves.length - 1),
+                )
+              }
+              disabled={currentShelfPage >= shelves.length - 1}
+            >
+              {">"}
+            </button>
+          </div>
         </div>
       </div>
     </>
