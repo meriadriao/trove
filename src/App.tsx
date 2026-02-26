@@ -8,8 +8,18 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+import { AVAILABLE_PLANTS } from "./cacarecos";
 
 library.add(fas, far, fab);
+
+type PlantItem = {
+  id: string;
+  name: string;
+  src: string;
+  width: number;
+  height: number;
+  price: number;
+};
 
 function App() {
   const [focusDuration, setFocusDuration] = useState(25);
@@ -156,6 +166,19 @@ function App() {
 
   const [currentShelfPage, setCurrentShelfPage] = useState(0);
 
+  const [isShopOpen, setIsShopOpen] = useState(false);
+
+  const buyItem = (item: PlantItem) => {
+    if (leafBalance >= item.price) {
+      setLeafBalance((prev) => prev - item.price);
+      setOwnedItems((prev) => [...prev, item]);
+      alert(`You bought ${item.name} for ${item.price} leafs!`);
+    }
+    else {
+      alert("Not enough leafs to buy this item!");
+    }
+  };
+
   return (
     <>
       <div className="pomodoro">
@@ -169,7 +192,7 @@ function App() {
               onClick={handleSettingsToggle}
             >
               <FontAwesomeIcon
-                icon="fa-solid fa-gear"
+                icon={["fas", "gear"]}
                 style={{ color: "rgb(255, 255, 255)" }}
               />
             </button>
@@ -182,7 +205,7 @@ function App() {
                   aria-label="Close Settings"
                   onClick={handleSettingsToggle}
                 >
-                  X
+                  x
                 </button>
               </div>
               <div className="setting-content" id="setting-content">
@@ -250,7 +273,7 @@ function App() {
             onClick={handlePlansToggle}
           >
             <FontAwesomeIcon
-              icon="fa-solid fa-pen-to-square"
+              icon={["fas", "pen-to-square"]}
               style={{ color: "rgb(255, 255, 255)" }}
             />
           </button>
@@ -304,7 +327,7 @@ function App() {
               aria-label="Close plans list"
               onClick={handlePlansToggle}
             >
-              X
+              x
             </button>
           </div>
           <div id="todo-list" className="todo-list">
@@ -349,7 +372,7 @@ function App() {
             <div className="items-row">
               {shelves[currentShelfPage]?.map((item, idx) => (
                 <img
-                  key={"${item.id}-${idx}"}
+                  key={`${item.id}-${idx}`}
                   src={item.src}
                   alt={item.name}
                   style={{
@@ -385,12 +408,41 @@ function App() {
               </button>
             </div>
             <div className="leaf-balance">
-              <FontAwesomeIcon icon="fa-solid fa-leaf" className="leaf-icon" /> {leafBalance} leafs</div>
+              <FontAwesomeIcon icon={["fas", "leaf"]} className="leaf-icon" /> {leafBalance} leafs</div>
+            <div className="shop">
+              <button className="shop-toggle" onClick={() => setIsShopOpen(!isShopOpen)}>
+                {isShopOpen ? "Close shop" : <><FontAwesomeIcon icon={["fas", "bag-shopping"]} className="bag-shopping-icon" /> Buy trinkets</>}
+              </button>
+            </div>
           </div>
+          {isShopOpen && (
+                <div className="shop-container">
+                  <div className="shop-header">
+                    <h2>Buy trinkets</h2>
+                    <button 
+                    id="close-settings-button"
+                  type="button"
+                  aria-label="Close Settings"
+                    onClick={() => setIsShopOpen(false)}>x</button>
+                  </div>
+                  <div className="shop-grid">
+                    {AVAILABLE_PLANTS.map((item) => (
+                      <div key={item.id} className="shop-item">
+                        <img
+                          src={item.src}
+                          alt={item.name} />
+                        <div className="shop-item-info">
+                          <h3>{item.name}</h3>
+                          <p>Price: {item.price} leafs</p>
+                          <button onClick={() => buyItem(item)}>Buy</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>)}
         </div>
       </div>
-    </>
-  );
+      </>
+    );
 }
-
 export default App;

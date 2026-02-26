@@ -1,4 +1,13 @@
-const AVAILABLE_PLANTS: PlantItem[] = [
+type PlantItem = {
+  id: string;
+  name: string;
+  src: string;
+  width: number;
+  height: number;
+  price: number;
+};
+
+export const AVAILABLE_PLANTS: PlantItem[] = [
   {
     id: "small-plant-1",
     name: "Pink flowers",
@@ -9,10 +18,10 @@ const AVAILABLE_PLANTS: PlantItem[] = [
   },
   {
     id: "small-plant-2",
-    name: "Dwarf Saplera";
-    price: 30;
-    width: 63;
-    height: 53;
+    name: "Dwarf Saplera",
+    price: 30,
+    width: 63,
+    height: 53,
     src: "/src/assets/plants/small plant 2.svg"
   },
   {
