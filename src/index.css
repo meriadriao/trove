@@ -6,8 +6,8 @@
   --text-muted: #a5a5a5;
   --focus-green: #8da399;
   --break-blue: #90a8cf;
-  --bg-button: #f4ae64;
-  --bg-button-border: #FA975A;
+  --bg-button: #ffc2bc;
+  --bg-button-border: #fa5a5a;
   --pixel-font: "Pixelify Sans", monospace;
   --sans-serif-font: Verdana, sans-serif;
 }
@@ -438,7 +438,7 @@ body {
 
 .leaf-balance {
   font-family: var(--text-main);
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--font-color);
   background-color: var(--bg-color-accent);
   display: flex;
@@ -452,7 +452,7 @@ body {
 
 .shop-toggle {
   font-family: var(--text-main);
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: 1px solid var(--bg-button-border);
   color: var(--font-color);
   background-color: var(--bg-button);

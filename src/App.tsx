@@ -33,6 +33,7 @@ function App() {
   const [isActive, setIsActive] = useState(false);
   const [nightMode, setNightMode] = useState(false);
   const [font, setFont] = useState<string>("pixelify-sans");
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const modeRef = useRef("focus");
   const breakDurationRef = useRef(5);
   const focusDurationRef = useRef(25);
@@ -71,6 +72,7 @@ function App() {
 
       if (typeof saved.nightMode === "boolean") setNightMode(saved.nightMode);
       if (typeof saved.font === "string") setFont(saved.font);
+      if (typeof saved.notificationsEnabled === "boolean") setNotificationsEnabled(saved.notificationsEnabled && Notification.permission === "granted");
 
       // ensure timer is not active on load; set timeLeft from saved durations/mode
       const useMode = saved.mode ?? (mode || "focus");
@@ -85,6 +87,23 @@ function App() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (
+      typeof Notification !== "undefined" &&
+      Notification.permission === "default" &&
+      !notificationsEnabled
+    ) {
+      // simple confirm instead of alert to reduce clicks
+      if (
+        window.confirm(
+          "This app can send you timer notifications. Enable them?",
+        )
+      ) {
+        requestNotificationPermission();
+      }
+    }
+  }, [notificationsEnabled]);
+
   // Persist selected state to localStorage when it changes
   useEffect(() => {
     try {
@@ -97,6 +116,7 @@ function App() {
         mode,
         nightMode,
         font,
+        notificationsEnabled,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (err) {
@@ -105,7 +125,7 @@ function App() {
     }
   // persisting nightMode and font is handled separately
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [leafBalance, ownedItems, tasks, focusDuration, breakDuration, mode]);
+  }, [leafBalance, ownedItems, tasks, focusDuration, breakDuration, mode, notificationsEnabled]);
 
   // persist night mode and font when they change
   useEffect(() => {
@@ -149,6 +169,45 @@ function App() {
     const menu = document.getElementById("settings-menu");
     if (menu) {
       menu.classList.toggle("open");
+    }
+  };
+
+  const requestNotificationPermission = () => {
+    // prompt user before calling the browser API
+    alert("This site would like to send you notifications.");
+    Notification.requestPermission().then((perm) => {
+      setNotificationsEnabled(perm === "granted");
+    });
+  };
+
+  const playNotification = () => {
+    // requires permission to be granted
+    if (Notification.permission !== "granted") return;
+    const currentMode = modeRef.current;
+    const title = currentMode === "focus" ? "Focus time complete!" : "Break time over!";
+    const message = currentMode === "focus" ? "Great work! Time for a break." : "Ready to focus again?";
+    new Notification(title, {
+      body: message,
+      icon: "/favicon/favicon.svg",
+    });
+    // brief audible ping using Web Audio
+    try {
+      // WebKit browsers use webkitAudioContext
+      const AudioCtxClass =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+      if (AudioCtxClass) {
+        const ctx = new AudioCtxClass();
+        const osc = ctx.createOscillator();
+        osc.frequency.value = 440;
+        osc.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      }
+    } catch (error) {
+      // ignore if audio context cannot be created
+      console.warn("Audio notification failed", error);
     }
   };
 
@@ -200,6 +259,10 @@ function App() {
           }
 
           if (newTime === 0) {
+            // fire notifications before switching mode
+            if (notificationsEnabled && Notification.permission === "granted") {
+              playNotification();
+            }
             const currentMode = modeRef.current;
             const newMode = currentMode === "focus" ? "break" : "focus";
             const duration =
@@ -217,7 +280,7 @@ function App() {
     }
 
     return () => clearInterval(interval);
-  }, [isActive]);
+  }, [isActive, notificationsEnabled]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -303,7 +366,19 @@ function App() {
                 </button>
               </div>
               <div className="setting-content" id="setting-content">
-                <div className="setting-item">{/* notificações */}</div>
+                <div className="setting-item">
+                  <label htmlFor="notif-toggle">Notifications </label>
+                  <input
+                    id="notif-toggle"
+                    type="checkbox"
+                    checked={notificationsEnabled}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      if (checked) requestNotificationPermission();
+                      else setNotificationsEnabled(false);
+                    }}
+                  />
+                </div>
                 <div className="setting-item">
                   <label htmlFor="setting-label">Night Mode </label>
                   <select
