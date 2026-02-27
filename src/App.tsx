@@ -31,7 +31,6 @@ function App() {
   const [isActive, setIsActive] = useState(false);
   const [nightMode, setNightMode] = useState(false);
   const [font, setFont] = useState<string>("pixelify-sans");
-  // const [showOngoingTasks, setShowOngoingTasks] = useState(true);
   const modeRef = useRef("focus");
   const breakDurationRef = useRef(5);
   const focusDurationRef = useRef(25);
@@ -79,7 +78,9 @@ function App() {
       setTimeLeft((useMode === "focus" ? fd : bd) * 60);
     } catch (err) {
       // ignore parse errors
+      console.error("Failed to parse saved state", err);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persist selected state to localStorage when it changes
@@ -89,7 +90,6 @@ function App() {
         leafBalance,
         ownedItems: ownedItems.map((i) => i.id),
         tasks,
-        showOngoingTasks,
         focusDuration,
         breakDuration,
         mode,
@@ -99,7 +99,10 @@ function App() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (err) {
       // ignore storage errors
+      console.error("Failed to persist state", err);
     }
+  // persisting nightMode and font is handled separately
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leafBalance, ownedItems, tasks, focusDuration, breakDuration, mode]);
 
   // persist night mode and font when they change
@@ -110,7 +113,10 @@ function App() {
       saved.nightMode = nightMode;
       saved.font = font;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-    } catch (err) {}
+    } catch (err) {
+      // ignore, but log for debugging
+      console.error("Failed to persist nightMode/font", err);
+    }
   }, [nightMode, font]);
 
   // apply night mode class to body
@@ -141,19 +147,15 @@ function App() {
     const menu = document.getElementById("settings-menu");
     if (menu) {
       menu.classList.toggle("open");
-      setIsMenuOpen(menu.classList.contains("open"));
     }
   };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handlePlansToggle = () => {
     const plansList = document.getElementById("plans-list");
     if (plansList) {
       plansList.classList.toggle("open");
-      setIsPlansOpen(plansList.classList.contains("open"));
     }
   };
-  const [isPlansOpen, setIsPlansOpen] = useState(false);
 
   const handleTodoInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
