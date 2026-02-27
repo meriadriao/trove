@@ -567,6 +567,7 @@ function App() {
           )}
         </div>
       </div>
+      <Analytics />
     </>
   );
 }
