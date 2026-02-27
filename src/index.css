@@ -396,6 +396,7 @@ body {
   width: 100%;
   justify-content: center;
   height: 120px;
+  gap: 10px;
 }
 
 .cacarecos img {
@@ -440,7 +441,7 @@ body {
   font-family: var(--text-main);
   font-size: 1rem;
   color: var(--font-color);
-  background-color: #FFF5E1;
+  background-color: #fff5e1;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -453,9 +454,9 @@ body {
 .shop-toggle {
   font-family: var(--text-main);
   font-size: 1rem;
-  border: 1px solid #FFB85D;
+  border: 1px solid #ffb85d;
   color: var(--font-color);
-  background-color: #FFE6C6;
+  background-color: #ffe6c6;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -494,16 +495,20 @@ body {
 
 .shop-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
-  height: 150px;
+  height: 200px;
   overflow-y: auto;
+  padding: 15px;
 }
 
 .shop-item {
-  background: #ffe0d8;
-  max-width: 100px;
-  border: 1px solid #532e1a;
+  background: #fff0dc;
+  width: 150px;
+  height: fit-content;
+  border: 1px solid #000000;
+  border-radius: 10px;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -511,6 +516,30 @@ body {
 }
 
 .item-preview img {
-  max-height: 64px;
-  max-width: 64px;
+  image-rendering: pixelated;
+}
+
+.shop-item-info h3 {
+  font-family: var(--text-main);
+  font-size: 0.9rem;
+  color: #f66063;
+  text-align: center;
+}
+
+.shop-item-info button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--text-main);
+  font-size: 0.9rem;
+  border: 1px solid #ffb85d;
+  color: var(--font-color);
+  background-color: #ffe6c6;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.shop-item-info button:hover {
+  background-color: #fbc47c;
 }

@@ -22,16 +22,108 @@ type PlantItem = {
 };
 
 function App() {
+  const STORAGE_KEY = "trove_state_v1";
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
   const [timeLeft, setTimeLeft] = useState(focusDuration * 60);
   const [mode, setMode] = useState("focus");
   const [isActive, setIsActive] = useState(false);
+  const [nightMode, setNightMode] = useState(false);
+  const [font, setFont] = useState<string>("pixelify-sans");
   const modeRef = useRef("focus");
   const breakDurationRef = useRef(5);
   const focusDurationRef = useRef(25);
   const [leafBalance, setLeafBalance] = useState<number>(0);
   const [ownedItems, setOwnedItems] = useState<PlantItem[]>([]);
+  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>([]);
+
+  // Load persisted state from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+
+      if (typeof saved.leafBalance === "number") setLeafBalance(saved.leafBalance);
+
+      if (Array.isArray(saved.tasks)) setTasks(saved.tasks);
+
+      if (typeof saved.focusDuration === "number") {
+        setFocusDuration(saved.focusDuration);
+      }
+
+      if (typeof saved.breakDuration === "number") {
+        setBreakDuration(saved.breakDuration);
+      }
+
+      if (Array.isArray(saved.ownedItems)) {
+        // reconstruct owned items from AVAILABLE_PLANTS by id
+        const items = saved.ownedItems
+          .map((id: string) => AVAILABLE_PLANTS.find((p) => p.id === id))
+          .filter(Boolean) as PlantItem[];
+        setOwnedItems(items);
+      }
+
+      if (saved.mode) setMode(saved.mode);
+
+      if (typeof saved.nightMode === "boolean") setNightMode(saved.nightMode);
+      if (typeof saved.font === "string") setFont(saved.font);
+
+      // ensure timer is not active on load; set timeLeft from saved durations/mode
+      const useMode = saved.mode ?? (mode || "focus");
+      const fd = saved.focusDuration ?? focusDuration;
+      const bd = saved.breakDuration ?? breakDuration;
+      setIsActive(false);
+      setTimeLeft((useMode === "focus" ? fd : bd) * 60);
+    } catch (err) {
+      // ignore parse errors
+    }
+  }, []);
+
+  // Persist selected state to localStorage when it changes
+  useEffect(() => {
+    try {
+      const state = {
+        leafBalance,
+        ownedItems: ownedItems.map((i) => i.id),
+        tasks,
+        focusDuration,
+        breakDuration,
+        mode,
+        nightMode,
+        font,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+      // ignore storage errors
+    }
+  }, [leafBalance, ownedItems, tasks, focusDuration, breakDuration, mode]);
+
+  // persist night mode and font when they change
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const saved = raw ? JSON.parse(raw) : {};
+      saved.nightMode = nightMode;
+      saved.font = font;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    } catch (err) {}
+  }, [nightMode, font]);
+
+  // apply night mode class to body
+  useEffect(() => {
+    if (nightMode) document.body.classList.add("night-mode");
+    else document.body.classList.remove("night-mode");
+  }, [nightMode]);
+
+  // apply font choice to body
+  useEffect(() => {
+    const fontMap: Record<string, string> = {
+      "pixelify-sans": "Pixelify Sans, monospace",
+      "funnel-display": "Verdana, sans-serif",
+    };
+    document.body.style.fontFamily = fontMap[font] ?? font;
+  }, [font]);
 
   // Update refs when state changes
   useEffect(() => {
@@ -60,9 +152,6 @@ function App() {
   };
   const [isPlansOpen, setIsPlansOpen] = useState(false);
 
-  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>(
-    [],
-  );
 
   const handleTodoInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -173,8 +262,7 @@ function App() {
       setLeafBalance((prev) => prev - item.price);
       setOwnedItems((prev) => [...prev, item]);
       alert(`You bought ${item.name} for ${item.price} leafs!`);
-    }
-    else {
+    } else {
       alert("Not enough leafs to buy this item!");
     }
   };
@@ -212,14 +300,22 @@ function App() {
                 <div className="setting-item">{/* notificações */}</div>
                 <div className="setting-item">
                   <label htmlFor="setting-label">Night Mode </label>
-                  <select id="night-mode-select">
+                  <select
+                    id="night-mode-select"
+                    value={nightMode ? "on" : "off"}
+                    onChange={(e) => setNightMode(e.target.value === "on")}
+                  >
                     <option value="off">Off</option>
                     <option value="on">On</option>
                   </select>
                 </div>
                 <div className="setting-item">
                   <label htmlFor="setting-label">Font </label>
-                  <select id="font-select">
+                  <select
+                    id="font-select"
+                    value={font}
+                    onChange={(e) => setFont(e.target.value)}
+                  >
                     <option value="pixelify-sans">Pixel</option>
                     <option value="funnel-display">Sans-serif</option>
                   </select>
@@ -408,41 +504,64 @@ function App() {
               </button>
             </div>
             <div className="leaf-balance">
-              <FontAwesomeIcon icon={["fas", "leaf"]} className="leaf-icon" /> {leafBalance} leafs</div>
+              <FontAwesomeIcon icon={["fas", "leaf"]} className="leaf-icon" />{" "}
+              {leafBalance} leafs
+            </div>
             <div className="shop">
-              <button className="shop-toggle" onClick={() => setIsShopOpen(!isShopOpen)}>
-                {isShopOpen ? "Close shop" : <><FontAwesomeIcon icon={["fas", "bag-shopping"]} className="bag-shopping-icon" /> Buy trinkets</>}
+              <button
+                className="shop-toggle"
+                onClick={() => setIsShopOpen(!isShopOpen)}
+              >
+                {isShopOpen ? (
+                  "Close shop"
+                ) : (
+                  <>
+                    <FontAwesomeIcon
+                      icon={["fas", "bag-shopping"]}
+                      className="bag-shopping-icon"
+                    />{" "}
+                    Buy trinkets
+                  </>
+                )}
               </button>
             </div>
           </div>
           {isShopOpen && (
-                <div className="shop-container">
-                  <div className="shop-header">
-                    <h2>Buy trinkets</h2>
-                    <button 
-                    id="close-settings-button"
+            <div className="shop-container">
+              <div className="shop-header">
+                <h2>Buy trinkets</h2>
+                <button
+                  id="close-settings-button"
                   type="button"
                   aria-label="Close Settings"
-                    onClick={() => setIsShopOpen(false)}>x</button>
+                  onClick={() => setIsShopOpen(false)}
+                >
+                  x
+                </button>
+              </div>
+              <div className="shop-grid">
+                {AVAILABLE_PLANTS.map((item) => (
+                  <div key={item.id} className="shop-item">
+                    <img
+                      src={item.src}
+                      alt={item.name}
+                      style={{
+                        width: `${item.width}px`,
+                        height: `${item.height}px`,
+                      }}
+                    />
+                    <div className="shop-item-info">
+                      <h3>{item.name}</h3>
+                      <button onClick={() => buyItem(item)}>{item.price} leafs | Buy</button>
+                    </div>
                   </div>
-                  <div className="shop-grid">
-                    {AVAILABLE_PLANTS.map((item) => (
-                      <div key={item.id} className="shop-item">
-                        <img
-                          src={item.src}
-                          alt={item.name} />
-                        <div className="shop-item-info">
-                          <h3>{item.name}</h3>
-                          <p>Price: {item.price} leafs</p>
-                          <button onClick={() => buyItem(item)}>Buy</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>)}
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      </>
-    );
+    </>
+  );
 }
 export default App;
