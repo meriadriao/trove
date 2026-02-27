@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import "./index.css";
 
+import { Analytics } from "@vercel/analytics/next"
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
