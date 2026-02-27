@@ -6,6 +6,8 @@
   --text-muted: #a5a5a5;
   --focus-green: #8da399;
   --break-blue: #90a8cf;
+  --bg-button: #f4ae64;
+  --bg-button-border: #FA975A;
   --pixel-font: "Pixelify Sans", monospace;
   --sans-serif-font: Verdana, sans-serif;
 }
@@ -14,6 +16,8 @@ body.night-mode {
   --bg-color: #1e1e1e;
   --bg-color-accent: #2c2c2c;
   --font-color: #f3f3f3;
+  --bg-button: #5b1706;
+  --bg-button-border: #441206;
 }
 
 * {
@@ -33,7 +37,7 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding-top: 50px;
+  padding-top: 70px;
 }
 
 /* toolbar */
@@ -52,11 +56,6 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-}
-
-.settings-button img {
-  width: 70%;
-  height: 70%;
   align-items: center;
 }
 
@@ -441,7 +440,7 @@ body {
   font-family: var(--text-main);
   font-size: 1rem;
   color: var(--font-color);
-  background-color: #fff5e1;
+  background-color: var(--bg-color-accent);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -454,9 +453,9 @@ body {
 .shop-toggle {
   font-family: var(--text-main);
   font-size: 1rem;
-  border: 1px solid #ffb85d;
+  border: 1px solid var(--bg-button-border);
   color: var(--font-color);
-  background-color: #ffe6c6;
+  background-color: var(--bg-button);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -465,7 +464,8 @@ body {
 }
 
 .shop-toggle:hover {
-  background-color: #fbc47c;
+  background-color: var(--bg-button);
+  opacity: 0.8;
 }
 
 .shop-container {
@@ -504,7 +504,7 @@ body {
 }
 
 .shop-item {
-  background: #fff0dc;
+  background: var(--bg-color);
   width: 150px;
   height: fit-content;
   border: 1px solid #000000;
@@ -532,14 +532,16 @@ body {
   justify-content: center;
   font-family: var(--text-main);
   font-size: 0.9rem;
-  border: 1px solid #ffb85d;
+  border: 1px solid var(--bg-button-border);
   color: var(--font-color);
-  background-color: #ffe6c6;
+  background-color: var(--bg-button);
+  text-decoration: none;
   gap: 5px;
   padding: 8px;
   border-radius: 5px;
 }
 
 .shop-item-info button:hover {
-  background-color: #fbc47c;
+  background-color: var(--bg-button-hover);
+  opacity: 0.8;
 }

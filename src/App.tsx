@@ -8,6 +8,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+
 import { AVAILABLE_PLANTS } from "./cacarecos";
 
 library.add(fas, far, fab);
@@ -30,6 +31,7 @@ function App() {
   const [isActive, setIsActive] = useState(false);
   const [nightMode, setNightMode] = useState(false);
   const [font, setFont] = useState<string>("pixelify-sans");
+  // const [showOngoingTasks, setShowOngoingTasks] = useState(true);
   const modeRef = useRef("focus");
   const breakDurationRef = useRef(5);
   const focusDurationRef = useRef(25);
@@ -87,6 +89,7 @@ function App() {
         leafBalance,
         ownedItems: ownedItems.map((i) => i.id),
         tasks,
+        showOngoingTasks,
         focusDuration,
         breakDuration,
         mode,
@@ -151,7 +154,6 @@ function App() {
     }
   };
   const [isPlansOpen, setIsPlansOpen] = useState(false);
-
 
   const handleTodoInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -317,7 +319,7 @@ function App() {
                     onChange={(e) => setFont(e.target.value)}
                   >
                     <option value="pixelify-sans">Pixel</option>
-                    <option value="funnel-display">Sans-serif</option>
+                    <option value="verdana">Sans-serif</option>
                   </select>
                 </div>
                 <hr />
