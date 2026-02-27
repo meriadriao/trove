@@ -7,6 +7,13 @@ type PlantItem = {
   price: number;
 };
 
+// helper that resolves an image in the src/assets/plants folder via Vite's
+// import.meta.url mechanism. This ensures the path will be correct both
+// in dev and after the build, and handles spaces or hashing automatically.
+function plantSrc(fileName: string) {
+  return new URL(`./assets/plants/${fileName}`, import.meta.url).href;
+}
+
 export const AVAILABLE_PLANTS: PlantItem[] = [
   {
     id: "small-plant-1",
@@ -14,7 +21,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 30,
     width: 41,
     height: 55,
-    src: "/assets/plants/small plant 1.png"
+    src: plantSrc("small plant 1.png")
   },
   {
     id: "small-plant-2",
@@ -22,7 +29,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 30,
     width: 63,
     height: 53,
-    src: "/assets/plants/small plant 2.png"
+    src: plantSrc("small plant 2.png")
   },
   {
     id: "small-plant-3",
@@ -30,7 +37,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 20,
     width: 55,
     height: 55,
-    src: "/assets/plants/small plant 3.png"
+    src: plantSrc("small plant 3.png")
   },
   {
     id: "small-plant-4",
@@ -38,7 +45,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 20,
     width: 31,
     height: 63,
-    src: "/assets/plants/small plant 4.png"
+    src: plantSrc("small plant 4.png")
   },
   {
     id: "small-plant-5",
@@ -46,7 +53,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 30,
     width: 85,
     height: 71,
-    src: "/assets/plants/small plant 5.png"
+    src: plantSrc("small plant 5.png")
   },
   {
     id: "tall-plant-1",
@@ -54,7 +61,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 50,
     width: 43,
     height: 97,
-    src: "/assets/plants/tall plant 1.png"
+    src: plantSrc("tall plant 1.png")
   },
   {
     id: "tall-plant-2",
@@ -62,7 +69,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 50,
     width: 55,
     height: 109,
-    src: "/assets/plants/tall plant 2.png"
+    src: plantSrc("tall plant 2.png")
   },
   {
     id: "tall-plant-3",
@@ -70,7 +77,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 40,
     width: 55,
     height: 109,
-    src: "/assets/plants/tall plant 3.png"
+    src: plantSrc("tall plant 3.png")
   },
   {
     id: "tall-plant-4",
@@ -78,7 +85,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 50,
     width: 51,
     height: 115,
-    src: "/assets/plants/tall plant 4.png"
+    src: plantSrc("tall plant 4.png")
   },
   {
     id: "trinket-1",
@@ -86,7 +93,7 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 50,
     width: 31,
     height: 35,
-    src: "/assets/plants/trinket 1.png"
+    src: plantSrc("trinket 1.png")
   },
   {
     id: "trinket-2",
@@ -94,6 +101,6 @@ export const AVAILABLE_PLANTS: PlantItem[] = [
     price: 20,
     width: 19,
     height: 29,
-    src: "/assets/plants/trinket 2.png"
+    src: plantSrc("trinket 2.png")
   }
 ];
