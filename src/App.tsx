@@ -439,8 +439,8 @@ function App() {
               </div>
             </div>
           </div>
-          <h1 className="plans-today" aria-label="Plans for today">
-            Plans for today
+          <h1 className="plans-today" aria-label="header">
+            let's build our trove
           </h1>
           <button
             className="edit-list-button"
