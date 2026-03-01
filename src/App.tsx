@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import "./index.css";
 
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -39,7 +39,9 @@ function App() {
   const focusDurationRef = useRef(25);
   const [leafBalance, setLeafBalance] = useState<number>(0);
   const [ownedItems, setOwnedItems] = useState<PlantItem[]>([]);
-  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>([]);
+  const [tasks, setTasks] = useState<{ text: string; completed: boolean }[]>(
+    [],
+  );
 
   // Load persisted state from localStorage on mount
   useEffect(() => {
@@ -48,7 +50,8 @@ function App() {
       if (!raw) return;
       const saved = JSON.parse(raw);
 
-      if (typeof saved.leafBalance === "number") setLeafBalance(saved.leafBalance);
+      if (typeof saved.leafBalance === "number")
+        setLeafBalance(saved.leafBalance);
 
       if (Array.isArray(saved.tasks)) setTasks(saved.tasks);
 
@@ -72,7 +75,10 @@ function App() {
 
       if (typeof saved.nightMode === "boolean") setNightMode(saved.nightMode);
       if (typeof saved.font === "string") setFont(saved.font);
-      if (typeof saved.notificationsEnabled === "boolean") setNotificationsEnabled(saved.notificationsEnabled && Notification.permission === "granted");
+      if (typeof saved.notificationsEnabled === "boolean")
+        setNotificationsEnabled(
+          saved.notificationsEnabled && Notification.permission === "granted",
+        );
 
       // ensure timer is not active on load; set timeLeft from saved durations/mode
       const useMode = saved.mode ?? (mode || "focus");
@@ -84,7 +90,7 @@ function App() {
       // ignore parse errors
       console.error("Failed to parse saved state", err);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -123,9 +129,17 @@ function App() {
       // ignore storage errors
       console.error("Failed to persist state", err);
     }
-  // persisting nightMode and font is handled separately
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [leafBalance, ownedItems, tasks, focusDuration, breakDuration, mode, notificationsEnabled]);
+    // persisting nightMode and font is handled separately
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    leafBalance,
+    ownedItems,
+    tasks,
+    focusDuration,
+    breakDuration,
+    mode,
+    notificationsEnabled,
+  ]);
 
   // persist night mode and font when they change
   useEffect(() => {
@@ -184,8 +198,12 @@ function App() {
     // requires permission to be granted
     if (Notification.permission !== "granted") return;
     const currentMode = modeRef.current;
-    const title = currentMode === "focus" ? "Focus time complete!" : "Break time over!";
-    const message = currentMode === "focus" ? "Great work! Time for a break." : "Ready to focus again?";
+    const title =
+      currentMode === "focus" ? "Focus time complete!" : "Break time over!";
+    const message =
+      currentMode === "focus"
+        ? "Great work! Time for a break."
+        : "Ready to focus again?";
     new Notification(title, {
       body: message,
       icon: "/favicon/favicon.svg",
@@ -633,13 +651,32 @@ function App() {
                     />
                     <div className="shop-item-info">
                       <h3>{item.name}</h3>
-                      <button onClick={() => buyItem(item)}>{item.price} leafs | Buy</button>
+                      <button onClick={() => buyItem(item)}>
+                        {item.price} leafs | Buy
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
+        </div>
+        <div className="footer">
+          <p>
+            made with{" "}
+            <FontAwesomeIcon
+              icon={["fas", "heart"]}
+              style={{ color: "var(--text-main)" }}
+            />{" "}
+            by{" "}
+            <a
+              href="https://github.com/meriadriao"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Meri
+            </a>
+          </p>
         </div>
       </div>
       <Analytics />
