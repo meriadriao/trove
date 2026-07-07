@@ -30,7 +30,4 @@ The app's hierarchy is flat, with balanced, straightforward, and accessible navi
 ## ✨ Running the app
 [You can use the app here.](https://trove-clock.vercel.app/)
 
-## 🎥 Preview
-<video src ="https://github.com/user-attachments/assets/d9002a56-e433-4b81-b497-1400bed8990b" controls></video>
-
 
