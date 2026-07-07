@@ -4,6 +4,7 @@ A Pomodoro tracker web app, with to-do list and customizable timer features. By 
 ## 🎨 Technologies
 - HTML
 - CSS
+- TypeScript
 - JavaScript
 
 ## ✨ Features
